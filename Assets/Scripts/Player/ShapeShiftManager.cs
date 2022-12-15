@@ -7,10 +7,21 @@ public class ShapeShiftManager : MonoBehaviour
 {
     private PlayerInput _input;
     [SerializeField] private GameObject[] shapes;
+
+    public shape currentShape;
+
+    public GameObject door;
     
+    public enum shape
+    {
+        blob,
+        smallBox,
+        bigbox
+    }
     void Start()
     {
         _input = GetComponent<PlayerInput>();
+        currentShape = shape.blob;
     }
 
     void Update()
@@ -31,6 +42,8 @@ public class ShapeShiftManager : MonoBehaviour
         {
             go.SetActive(false);
         }
+
+        currentShape = shape.blob;
     }
 
     private void OnTriggerStay(Collider other)
@@ -39,11 +52,17 @@ public class ShapeShiftManager : MonoBehaviour
         {
             DisableAll();
             shapes[2].SetActive(true);
+            currentShape = shape.bigbox;
         }
         else if (other.CompareTag("SmallBox") && _input.change)
         {
             DisableAll();
             shapes[1].SetActive(true);
+            currentShape = shape.smallBox;
+        }
+        else if (other.CompareTag("Pad") && currentShape == shape.bigbox)
+        {
+            door.SetActive(false);
         }
     }
 }
